@@ -1,0 +1,117 @@
+[gd_scene load_steps=5 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_hud"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(48, 48)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_player"]
+size = Vector2(64, 64)
+
+[node name="Main" type="Node2D"]
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Ground" type="TileMapLayer" parent="World"]
+tile_set = null
+
+[node name="Player" type="CharacterBody2D" parent="World"]
+position = Vector2(640, 360)
+script = ExtResource("1_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Player"]
+modulate = Color(0.2, 0.6, 1, 1)
+texture = SubResource("PlaceholderTexture2D_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="World/Player"]
+zoom = Vector2(1.5, 1.5)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("2_hud")
+
+[node name="TopBar" type="HBoxContainer" parent="HUD"]
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 1260.0
+offset_bottom = 50.0
+theme_override_constants/separation = 40
+
+[node name="PowerLevel" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "PWR: 1"
+
+[node name="Gold" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Gold: 0"
+
+[node name="Steps" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Steps: 0"
+
+[node name="Theme" type="Label" parent="HUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Unarmed Lv.0"
+
+[node name="BottomBar" type="HBoxContainer" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -50.0
+offset_right = -20.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Environment" type="Label" parent="HUD/BottomBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Forest Dojo (Tier 1)"
+
+[node name="Controls" type="Label" parent="HUD/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 16
+text = "WASD/Arrows: Move | Space: Attack | E: Interact"
+
+[node name="NotificationContainer" type="CenterContainer" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+
+[node name="Notification" type="Label" parent="HUD/NotificationContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Notification"
+horizontal_alignment = 1
+
+[node name="Timer" type="Timer" parent="HUD/NotificationContainer"]
+one_shot = true
+
+[node name="MobileControls" type="Control" parent="HUD"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AttackButton" type="TouchScreenButton" parent="HUD/MobileControls"]
+position = Vector2(1100, 500)
+action = "attack"
+
+[connection signal="timeout" from="HUD/NotificationContainer/Timer" to="HUD" method="_on_notification_timer_timeout"]
